@@ -77,12 +77,11 @@
 │       │
 │       └── resources
 │           ├── log4j2.xml                      # Log4j2 配置文件
-│           ├── openapi.yaml                    # 主 OpenAPI 3.0 规范文件
 │           └── openapi/                        # 模块化 OpenAPI 文件
-│               ├── player.yaml                 # 玩家相关接口
-│               ├── timestamp.yaml              # 时间戳相关接口
-│               ├── game.yaml                   # 游戏相关接口(示例)
-│               └── chat.yaml                   # 聊天相关接口(示例)
+│               ├── player.json                 # 玩家相关接口
+│               ├── timestamp.json              # 时间戳相关接口
+│               ├── game.json                   # 游戏相关接口(示例)
+│               └── chat.json                   # 聊天相关接口(示例)
 │
 └── configs                                     # 外部配置目录 (不打包)
     ├── servers.json                            # 服务器相关配置 (如端口)
@@ -122,7 +121,7 @@
 #### 自动文件发现机制
 框架采用了智能的OpenAPI文件自动发现机制，无需手动维护文件列表：
 
-- **自动扫描**: `RouterFactory` 会自动扫描 `src/main/resources/openapi/` 目录下的所有 `.yaml` 和 `.yml` 文件
+- **自动扫描**: `RouterFactory` 会自动扫描 `src/main/resources/openapi/` 目录下的所有 `.json` 文件
 - **递归支持**: 支持子文件夹的递归扫描，可以按模块组织文件结构
 - **动态加载**: 新增OpenAPI文件后无需修改代码，重启应用即可自动加载
 - **容错处理**: 单个文件加载失败不会影响其他文件的正常加载
@@ -139,19 +138,17 @@
 #### 模块化 OpenAPI 文件结构
 ```
 src/main/resources/openapi/
-├── player.yaml      # 玩家相关接口定义
-├── timestamp.yaml   # 时间戳相关接口定义
-├── game.yaml        # 游戏相关接口定义
-├── chat.yaml        # 聊天相关接口定义
+├── player.json      # 玩家相关接口定义
+├── timestamp.json   # 时间戳相关接口定
 └── modules/         # 子模块目录（可选）
-    ├── payment.yaml # 支付相关接口
-    └── admin.yaml   # 管理相关接口
+    ├── payment.json # 支付相关接口
+    └── admin.json   # 管理相关接口
 ```
 
 #### 文件发现日志
 应用启动时会输出发现的OpenAPI文件信息：
 ```
-2025-01-08 16:30:15.123 INFO  RouterFactory - Found 4 OpenAPI files: [openapi/player.yaml, openapi/timestamp.yaml, openapi/game.yaml, openapi/chat.yaml]
+2025-01-08 16:30:15.123 INFO  RouterFactory - Found 4 OpenAPI files: [openapi/player.json, openapi/timestamp.json, openapi/game.json, openapi/chat.json]
 2025-01-08 16:30:15.456 INFO  RouterFactory - All OpenAPI routers created and mounted successfully. Total files: 4
 ```
 
@@ -231,7 +228,7 @@ src/main/resources/openapi/
 
 ### 4.3. `resources/` 中的文件
 
-`log4j2.xml` 和 `openapi.yaml` ，它们通常与应用逻辑紧密耦合，打包在JAR内部是合适的。
+`log4j2.xml` ，它们通常与应用逻辑紧密耦合，打包在JAR内部是合适的。
 
 
 ### 4.5. `resources/log4j2.xml`
@@ -321,78 +318,59 @@ src/main/resources/openapi/
 - `configs/logging-prod.json`: 生产环境配置（warn级别）
 - `configs/logging.json`: 当前使用的配置文件
 
-#### 环境切换
-使用提供的脚本可以快速切换环境：
-
-**Windows:**
-```bash
-# 切换到开发环境
-scripts\switch-env.bat dev
-
-# 切换到生产环境
-scripts\switch-env.bat prod
-
-# 查看当前状态
-scripts\switch-env.bat status
-```
-
-**Linux/Unix:**
-```bash
-# 切换到开发环境
-scripts/switch-env.sh dev
-
-# 切换到生产环境
-scripts/switch-env.sh prod
-
-# 查看当前状态
-scripts/switch-env.sh status
-```
-
-### 4.4. `resources/openapi.yaml`
+### 4.4. `resources/*.json`
 API定义文件，`vertx-web-openapi-router` 将基于此文件自动解析路由和参数。
 
 ```yaml
-openapi: 3.0.0
-info:
-  title: Player API
-  version: 1.0.0
-  description: API for managing player information
-
-paths:
-  /api/v1/player/{playerId}:
-    get:
-      summary: Get player by ID
-      description: Retrieve a single player's information.
-      operationId: getPlayerById
-      parameters:
-        - name: playerId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Player'
-        '404':
-          description: Player not found
-        '500':
-          description: Internal server error
-
-components:
-  schemas:
-    Player:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        level:
-          type: integer
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Timestamp API",
+    "version": "1.0.0",
+    "description": "Server timestamp and time synchronization API module"
+  },
+  "paths": {
+    "/api/v1/timestamp": {
+      "get": {
+        "summary": "Get server timestamp",
+        "description": "Get current server timestamp in milliseconds.",
+        "operationId": "getServerTimestamp",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Timestamp" }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Timestamp": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "integer", "format": "int64", "description": "Current server timestamp in milliseconds" },
+          "timezone": { "type": "string", "description": "Server timezone" },
+          "iso8601": { "type": "string", "format": "date-time", "description": "ISO 8601 formatted timestamp" },
+          "unixTimestamp": { "type": "integer", "format": "int64", "description": "Unix timestamp in seconds" },
+          "formattedTime": { "type": "string", "description": "Human-readable formatted time" }
+        },
+        "required": [
+          "timestamp",
+          "timezone",
+          "iso8601",
+          "unixTimestamp",
+          "formattedTime"
+        ]
+      }
+    }
+  }
+} 
 ```
 
 ## 5. 核心代码实现（已更新）
@@ -865,35 +843,9 @@ public class ResponseUtil {
 
 #### 环境切换
 **快速切换到生产环境：**
-```bash
-# Windows
-scripts\switch-env.bat prod
 
-# Linux/Unix
-scripts/switch-env.sh prod
-```
+**查看文件夹run中的文件：**
 
-**快速切换到开发环境：**
-```bash
-# Windows
-scripts\switch-env.bat dev
-
-# Linux/Unix
-scripts/switch-env.sh dev
-```
-
-#### 自定义环境配置
-1. 复制现有配置文件：
-   ```bash
-   cp configs/logging-prod.json configs/logging-staging.json
-   ```
-
-2. 修改配置内容
-
-3. 应用配置：
-   ```bash
-   cp configs/logging-staging.json configs/logging.json
-   ```
 
 ### 6.4. 配置参数说明
 
@@ -958,6 +910,8 @@ scripts/switch-env.sh dev
 ```
 
 #### 部署建议
+**查看文件夹 run 中的部署打包**
+
 1. **打包时**: 不要将 `configs/` 目录打包到JAR中
 2. **部署时**: 将 `configs/` 目录与JAR文件放在同一目录
 3. **环境切换**: 使用提供的脚本或直接替换 `logging.json` 文件
@@ -972,47 +926,11 @@ scripts/switch-env.sh dev
     ```bash
     ./gradlew clean shadowJar
     ```
-    这会在 `build/libs/` 目录下生成一个类似 `vertx-api-framework-1.0.0-fat.jar` 的文件。
+    这会在 `build/libs/` 目录下生成一个类似 `vertx-api-framework-1.0.0-fat.zip` 的文件。
 
 2.  **运行服务**:
-    **关键**: 你必须在**项目根目录**下运行JAR文件，这样程序才能通过相对路径 `configs/servers.json` 找到配置文件。
-    ```bash
-    java -jar build/libs/vertx-api-framework-1.0.0-fat.jar
-    ```
+    **关键**: **查看文件夹 run 中的部署打包**
 
-3.  **测试API**:
-    启动服务后，你可以使用 `curl` 或 Postman 等工具来测试API。
-    *   **模拟数据**: 你需要先手动向Redis中添加一条数据，例如：
-        ```redis-cli
-        SET player:info:123 '{"id":"123","name":"PlayerOne","level":99}'
-        ```
-    *   **请求API**:
-        ```bash
-        curl http://localhost:8080/api/v1/player/123
-        ```
-    *   **预期成功响应**:
-        ```json
-        {
-          "code": 200,
-          "message": "Success",
-          "data": {
-            "id": "123",
-            "name": "PlayerOne",
-            "level": 99
-          }
-        }
-        ```
-    *   **请求一个不存在的玩家**:
-        ```bash
-        curl http://localhost:8080/api/v1/player/999
-        ```
-    *   **预期404响应**:
-        ```json
-        {
-          "code": 404,
-          "message": "Player not found"
-        }
-        ```
 
 ## 8. 总结
 
@@ -1055,7 +973,7 @@ scripts/switch-env.sh dev
 
 ## 9. 多路由映射与注册（JSON 版，结构与说明）
 
-为避免单一 `openapi.yaml` 文件越来越庞大，项目已支持将接口定义拆分为多个 JSON 文件，按模块划分并自动发现与挂载。以下仅为结构与流程说明，无需改动业务代码即可理解与扩展。
+为避免单一 `openapi.json` 文件越来越庞大，项目已支持将接口定义拆分为多个 JSON 文件，按模块划分并自动发现与挂载。以下仅为结构与流程说明，无需改动业务代码即可理解与扩展。
 
 ### 9.1 目录结构（建议）
 
@@ -1105,7 +1023,4 @@ All OpenAPI routers created and mounted successfully. Total files: 4
 3. 在 `RouteManager` 中登记该模块的注册器与文件名映射（或遵循统一命名约定）。
 4. 重启应用后，自动发现并挂载新模块路由。
 
-### 9.5 迁移建议（YAML → JSON）
-- 推荐将原有 YAML 拆分并迁移为多个 JSON 文件，按模块归类，文件名与模块保持一致。
-- 统一在 `openapi/` 目录下管理，便于自动扫描与维护。
-- 迁移后无需在单一文件维护所有接口，提升可读性与并行协作效率。
+
