@@ -1,0 +1,19 @@
+{
+  "logging": {
+    "level": "info",
+    "console": {
+      "enabled": true,
+      "level": "info"
+    },
+    "file": {
+      "enabled": true,
+      "level": "info",
+      "maxSize": "300MB",
+      "maxFiles": 10
+    },
+    "error": {
+      "enabled": true,
+      "level": "error"
+    }
+  }
+}

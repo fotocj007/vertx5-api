@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Timestamp API",
+    "version": "1.0.0",
+    "description": "Server timestamp and time synchronization API module"
+  },
+  "paths": {
+    "/api/v1/timestamp": {
+      "get": {
+        "summary": "Get server timestamp",
+        "description": "Get current server timestamp in milliseconds.",
+        "operationId": "getServerTimestamp",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Timestamp" }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Timestamp": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "integer", "format": "int64", "description": "Current server timestamp in milliseconds" },
+          "timezone": { "type": "string", "description": "Server timezone" },
+          "iso8601": { "type": "string", "format": "date-time", "description": "ISO 8601 formatted timestamp" },
+          "unixTimestamp": { "type": "integer", "format": "int64", "description": "Unix timestamp in seconds" },
+          "formattedTime": { "type": "string", "description": "Human-readable formatted time" }
+        },
+        "required": [
+          "timestamp",
+          "timezone",
+          "iso8601",
+          "unixTimestamp",
+          "formattedTime"
+        ]
+      }
+    }
+  }
+} 

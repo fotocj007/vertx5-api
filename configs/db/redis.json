@@ -1,0 +1,9 @@
+{
+  "redis": {
+    "uri": "redis://:pass_test@127.0.0.1:6379",
+    "pool": {
+      "maxSize": 16,
+      "maxWait": 32
+    }
+  }
+}

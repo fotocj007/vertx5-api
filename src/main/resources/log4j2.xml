@@ -1,0 +1,58 @@
+<configuration status="info">
+  <properties>
+    <property name="LOG_HOME">logs</property>
+    <property name="FILE_NAME">success-info</property>
+    <property name="ERROR_NAME">error-info</property>
+    <!-- 外部配置的日志级别，默认值为info -->
+    <property name="APP_LOG_LEVEL">${sys:app.log.level:-info}</property>
+    <property name="APP_LOG_CONSOLE_LEVEL">${sys:app.log.console.level:-info}</property>
+    <property name="APP_LOG_FILE_LEVEL">${sys:app.log.file.level:-info}</property>
+    <property name="APP_LOG_ERROR_LEVEL">${sys:app.log.error.level:-error}</property>
+    <property name="APP_LOG_FILE_MAX_SIZE">${sys:app.log.file.maxSize:-300MB}</property>
+  </properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <!-- 使用外部配置的控制台日志级别 -->
+      <ThresholdFilter level="${APP_LOG_CONSOLE_LEVEL}" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout>
+        <pattern>
+          %highlight{[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n}
+        </pattern>
+      </PatternLayout>
+    </Console>
+
+    <RollingFile name="Error" fileName="${LOG_HOME}/${ERROR_NAME}.log"
+                 filePattern="${LOG_HOME}/${ERROR_NAME}-%d{yyyy-MM-dd}-%i.log">
+      <ThresholdFilter level="${APP_LOG_ERROR_LEVEL}" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %class.%M() %L  - %msg%xEx%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+        <SizeBasedTriggeringPolicy size="${APP_LOG_FILE_MAX_SIZE}"/>
+      </Policies>
+    </RollingFile>
+
+    <RollingFile name="RollingFile" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                 filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class.%M() %L - %msg%xEx%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+        <SizeBasedTriggeringPolicy size="${APP_LOG_FILE_MAX_SIZE}"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+  <loggers>
+    <!-- 使用外部配置的根日志级别 -->
+    <root level="${APP_LOG_LEVEL}">
+      <appender-ref ref="RollingFile"/>
+      <appender-ref ref="Console"/>
+      <appender-ref ref="Error" />
+    </root>
+
+    <!-- 使用外部配置的self日志级别 -->
+    <Logger name="self" level="${APP_LOG_LEVEL}" additivity="false">
+      <appender-ref ref="RollingFile"/>
+      <appender-ref ref="Console"/>
+      <appender-ref ref="Error"/>
+    </Logger>
+  </loggers>
+</configuration>

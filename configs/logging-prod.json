@@ -1,0 +1,19 @@
+{
+  "logging": {
+    "level": "warn",
+    "console": {
+      "enabled": true,
+      "level": "warn"
+    },
+    "file": {
+      "enabled": true,
+      "level": "warn",
+      "maxSize": "500MB",
+      "maxFiles": 20
+    },
+    "error": {
+      "enabled": true,
+      "level": "error"
+    }
+  }
+}

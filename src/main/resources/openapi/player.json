@@ -1,0 +1,96 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Player API",
+    "version": "1.0.0",
+    "description": "Player management API module"
+  },
+  "paths": {
+    "/api/v1/player/{playerId}": {
+      "get": {
+        "summary": "Get player by ID",
+        "description": "Retrieve a single player's information.",
+        "operationId": "getPlayerById",
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Player" }
+              }
+            }
+          },
+          "404": { "description": "Player not found" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/player": {
+      "post": {
+        "summary": "Save player",
+        "description": "Create or update a player.",
+        "operationId": "savePlayer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlayerSimple" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Saved" },
+          "400": { "description": "Bad request" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Player": {
+        "type": "object",
+        "properties": {
+          "playerId": { "type": "string", "description": "Unique player identifier" },
+          "username": { "type": "string", "description": "Player username" },
+          "email": { "type": "string", "format": "email", "description": "Player email address" },
+          "level": { "type": "integer", "description": "Player level" },
+          "experience": { "type": "integer", "description": "Player experience points" },
+          "coins": { "type": "integer", "description": "Player coins" },
+          "gems": { "type": "integer", "description": "Player gems" },
+          "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" },
+          "lastLoginAt": { "type": "string", "format": "date-time", "description": "Last login timestamp" },
+          "status": { "type": "string", "enum": ["active", "inactive", "banned"], "description": "Player account status" }
+        },
+        "required": [
+          "playerId",
+          "username",
+          "email",
+          "level",
+          "experience",
+          "coins",
+          "gems",
+          "createdAt",
+          "status"
+        ]
+      },
+      "PlayerSimple": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "level": { "type": "integer" }
+        },
+        "required": ["id", "name", "level"]
+      }
+    }
+  }
+} 

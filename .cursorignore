@@ -1,0 +1,12 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+
+*.log
+.git
+.idea
+.gradle
+.vercel
+.vscode
+build
+gradle
+doc
+logs

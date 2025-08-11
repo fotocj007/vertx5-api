@@ -1,0 +1,19 @@
+{
+  "logging": {
+    "level": "debug",
+    "console": {
+      "enabled": true,
+      "level": "debug"
+    },
+    "file": {
+      "enabled": true,
+      "level": "debug",
+      "maxSize": "100MB",
+      "maxFiles": 5
+    },
+    "error": {
+      "enabled": true,
+      "level": "error"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+### Vert.x ###
+.vertx/
+### Gradle ###
+.gradle
+/buildTool/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+.vscode/*
+
+logs/
+bin/
+.gradle/
+.idea/
+.vscode/
+build/
+

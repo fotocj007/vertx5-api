@@ -1,0 +1,11 @@
+
+文件结构:
+bin文件(打包后解压文件:build/distributions/)
+lib文件(打包后解压文件:build/distributions/)
+configs(项目外的配置文件)
+
+后台运行:
+./start-server.sh
+
+停止服务:
+./stop/sh
